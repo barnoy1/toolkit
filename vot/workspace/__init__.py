@@ -204,15 +204,19 @@ class Workspace(Attributee):
         self._directory = directory
 
         self._storage = Proxy(lambda: LocalStorage(directory) if directory is not None else NullStorage())
-        
+
+        injected_sequences =  []
+        if 'gt_sequences' in kwargs.keys():
+            injected_sequences = kwargs.pop('gt_sequences')
+
         super().__init__(**kwargs)
 
         dataset_directory = normalize_path(self.sequences, directory)
 
-        if not self.stack.dataset is None:
+        if not self.stack.dataset is None and len(injected_sequences) == 0:
             Workspace.download_dataset(self.stack.dataset, dataset_directory)
 
-        self._dataset = load_dataset(dataset_directory)
+        self._dataset = load_dataset(dataset_directory, injected_sequences)
 
         # Register storage with all experiments in the stack
         for experiment in self.stack.experiments.values():

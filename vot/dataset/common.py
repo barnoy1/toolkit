@@ -192,6 +192,28 @@ def read_sequence_legacy(path):
 
     return BasedSequence(os.path.basename(path), _read_data, metadata=metadata)
 
+
+def read_injected_sequence(path):
+    """Reads a sequence from the given path.
+
+    Args:
+        path (str): The path to read the sequence from.
+
+    Returns:
+        Sequence: The sequence read from the given path.
+    """
+    if not os.path.isfile(os.path.join(path, "groundtruth.txt")):
+        return None
+
+    metadata = dict(fps=30, format="default")
+    metadata["channel.default"] = "color"
+    metadata["channels.color"] = "%08d.jpg"
+    metadata["root"] = path
+    metadata["length"] = None
+
+    return BasedSequence(os.path.basename(path), _read_data, metadata=metadata)
+
+
 @sequence_indexer.register("default")
 def index_sequences(path: str) -> None:
     """Indexes the sequences in the given path. Only works if there is a list.txt file in the given path or the path is a list file.

@@ -643,19 +643,6 @@ class TraxTrackerRuntime(TrackerRuntime):
         """ Destructor. This method is used to stop the tracker process when the object is deleted."""
         self.stop()
 
-def escape_path(path):
-    """ Escapes a path. This method is used to escape a path.
-    
-    Args:
-        path: The path to escape.
-        
-    Returns:
-        The escaped path.
-    """
-    if sys.platform.startswith("win"):
-        return path.replace("\\\\", "\\").replace("\\", "\\\\")
-    else:
-        return path
 
 def trax_python_adapter(tracker, command, envvars, paths="", log: bool = False, timeout: int = 30, linkpaths=None, arguments=None, python=None, socket=False, restart=False, **kwargs):
     """ Creates a Python adapter for a tracker. This method is used to create a Python adapter for a tracker.
@@ -695,6 +682,9 @@ def trax_python_adapter(tracker, command, envvars, paths="", log: bool = False, 
     envvars["PYTHONUNBUFFERED"] = "1"
 
     return TraxTrackerRuntime(tracker, command, log=log, timeout=timeout, linkpaths=linkpaths, envvars=envvars, arguments=arguments, socket=socket, restart=restart)
+
+
+
 
 def trax_matlab_adapter(tracker, command, envvars, paths="", log: bool = False, timeout: int = 30, linkpaths=None, arguments=None, matlab=None, socket=False, restart=False, **kwargs):
     """ Creates a Matlab adapter for a tracker. This method is used to create a Matlab adapter for a tracker. 

@@ -334,7 +334,7 @@ class Tracker(object):
         if "metadata" in kwargs:
             if isinstance(kwargs["metadata"], dict):
                 metadata.update(kwargs["metadata"])
-            del kwargs["arguments"]
+            del kwargs["metadata"]
 
         for name, value in kwargs.items():
             if name.startswith("meta_") and len(name) > 5:
@@ -906,8 +906,10 @@ class MultiObjectTrackerRuntime(TrackerRuntime):
 try:
 
     from vot.tracker.trax import TraxTrackerRuntime, trax_matlab_adapter, trax_python_adapter, trax_octave_adapter
+    from vot.tracker.offline import trax_offline_adapter
 
     _runtime_protocols["trax"] = TraxTrackerRuntime
+    _runtime_protocols["offline"] = trax_offline_adapter
     _runtime_protocols["traxmatlab"] = trax_matlab_adapter
     _runtime_protocols["traxpython"] = trax_python_adapter
     _runtime_protocols["traxoctave"] = trax_octave_adapter

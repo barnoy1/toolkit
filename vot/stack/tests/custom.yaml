@@ -1,0 +1,12 @@
+title: VOT Basic Test Stack
+experiments:
+  longterm:
+    type: unsupervised
+    repetitions: 2
+    analyses:
+      - type: average_tpr
+        name: custom_average_tpr
+      - type: pr_curve
+        name: custom_pr_curve
+      - type: f_curve
+        name: custom_f_curve

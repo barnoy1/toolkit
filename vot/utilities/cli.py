@@ -236,7 +236,9 @@ def do_evaluate(config: argparse.Namespace):
 
     logger.debug("Loaded workspace in '%s'", config.workspace)
 
-    trackers = workspace.registry.resolve(*config.trackers, storage=workspace.storage.substorage("results"), skip_unknown=False)
+    trackers = workspace.registry.resolve(*config.trackers, storage=workspace.storage.substorage("results"),
+                                          skip_unknown=True)
+
 
     if len(trackers) == 0:
         logger.error("Unable to continue without at least on tracker")

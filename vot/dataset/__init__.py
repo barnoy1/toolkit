@@ -1198,7 +1198,7 @@ def download_dataset(url: str, path: str):
     raise DatasetException("Illegal dataset identifier: {}".format(url))
 
 
-def load_dataset(path: str) -> Dataset:
+def load_dataset(path: str, injected_sequences=[]) -> Dataset:
     """Loads a dataset from a local directory
 
     Args:
@@ -1223,18 +1223,25 @@ def load_dataset(path: str) -> Dataset:
         sequence_list = indexer(path)
         if sequence_list is not None:
             break
-        
-    if sequence_list is None or len(sequence_list) == 0:
-        raise DatasetException("Unable to locate sequences in {}".format(path))
+
+    if len(injected_sequences) == 0:
+        if sequence_list is None or len(sequence_list) == 0:
+            raise DatasetException("Unable to locate sequences in {}".format(path))
 
     sequences = OrderedDict()
 
     logger.debug("Loading sequences...")
 
+    if injected_sequences:
+        sequence_list = injected_sequences
+
     for sequence_id in sequence_list:
         sequence_path = sequence_id.strip()
-        if not os.path.isabs(sequence_id):
-            sequence_path = os.path.join(path, sequence_id)
+        if injected_sequences:
+            sequence_path = sequence_id
+        else:
+            if not os.path.isabs(sequence_id):
+                sequence_path = os.path.join(path, sequence_id)
         sequence = load_sequence(sequence_path)
         sequences[sequence.name] = sequence
 
@@ -1275,3 +1282,10 @@ def read_legacy_sequence(path: str) -> Sequence:
     """Wrapper around the legacy sequence reader."""
     from vot.dataset.common import read_sequence_legacy
     return read_sequence_legacy(path)
+
+
+@sequence_reader.register("injected")
+def read_legacy_sequence(path: str) -> Sequence:
+    """Wrapper around the legacy sequence reader."""
+    from vot.dataset.common import read_injected_sequence
+    return read_injected_sequence(path)
